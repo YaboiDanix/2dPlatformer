@@ -6,7 +6,10 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
+
+
 #ifndef SFML_STARTER_GAME_H
+
 #define SFML_STARTER_GAME_H
 class game {
     public:
@@ -14,8 +17,11 @@ class game {
     void loop();
     b2Vec2 startPosition;
     sf::Clock time;
-
+    float coyote_ = 0;
+    double dt;
+    double accumulateur_ = 0.0f;
 private:
+
     b2WorldDef def;
     sf::RenderWindow window;
     b2WorldId monde;

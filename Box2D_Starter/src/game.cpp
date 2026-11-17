@@ -15,17 +15,17 @@
 
 void game::initialize() {
     window.create(sf::VideoMode({1600, 1000}), "The physics");
-    window.setFramerateLimit(120);
+    window.setFramerateLimit(60);
     def = b2DefaultWorldDef();
     def.gravity = {0.f, 9.81f};
     monde = b2CreateWorld(&def);
 }
 
 void game::loop() {
+
     constexpr double kPas = 1000.f / 60.f;
     constexpr int kSousPas = 4;
-    double accumulateur_ = 0.0f;
-    double dt;
+
     startPosition = {Convertions::ScreenToPhysics(400), Convertions::ScreenToPhysics(400)};
     font.openFromFile( "C:/Users/danix/projets_c++/SFML_Starter/Box2D_Starter/include/determination.ttf");
 
@@ -43,24 +43,26 @@ void game::loop() {
     Obstacle spike;
     spike.Setup(sf::Color::Red,{80,100});
     spike.SetupPhysics(monde, b2_staticBody, {30,35});
+    Obstacle Deathbox;
+    Deathbox.Setup(sf::Color::Transparent,{10000,1});
+    Deathbox.SetupPhysics(monde,b2_staticBody,{0,60});
     while (window.isOpen()) {
+        dt = dtclock.restart().asMilliseconds();
+        accumulateur_ += dt;
+        while (accumulateur_ >= kPas) {
+            b2World_Step(monde, kPas / 1000.0f, kSousPas);
+            accumulateur_ -= kPas;
+        }
         while (const std::optional event = window.pollEvent()) {
-            mario.Move();
-            mario.Jump();
+
             if (event->is<sf::Event::Closed>()) {
                 window.close();
             }
 
             }
+        mario.Move();
+        mario.Jump(dt);
 
-        dt = dtclock.restart().asMilliseconds();
-        accumulateur_ += dt;
-        //if () coyote_ = kCoyote;        // kCoyote ≈ 0,08 s
-        //else         coyote_ -= dt;
-        while (accumulateur_ >= kPas) {
-            b2World_Step(monde, kPas / 1000.0f, kSousPas);
-            accumulateur_ -= kPas;
-        }
 
 
 
@@ -71,6 +73,7 @@ void game::loop() {
 
         platform.Update();
         spike.Update(mario);
+        Deathbox.Update(mario);
         time.start();
         float t = time.getElapsedTime().asSeconds();
         sf::String timer = std::format("{:.2f}",t);
@@ -83,6 +86,7 @@ void game::loop() {
         window.draw(platform);
         window.draw(spike);
         window.draw(text);
+        window.draw(Deathbox);
         window.display();
 
      }

@@ -81,14 +81,41 @@ void Entity::Move() {
 }
 
 
-void Entity::Jump() {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Up)||sf::Joystick::isButtonPressed(0, 1)) {
-        if (grounded.HasTouched) {
-            float xVelocity = physics.GetVelocity().x;
-            physics.SetVelocity({xVelocity, -16});
-        }
+void Entity::Jump(double dt) {
+    float xVelocity = physics.GetVelocity().x;
+    float kCoyote = 80.f;
+    float kTampon = 100.f;
+    if (grounded.HasTouched) {
+        coyote_ = kCoyote;
     }
-}
+    else {
+        coyote_ -= dt;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Up)||sf::Joystick::isButtonPressed(0, 1)) {
+        tampon_ = kTampon;
+    }
+    else{
+        tampon_ -= dt;
+    }
+    if (grounded.HasTouched && tampon_ > 0.f) {
+        physics.SetVelocity({xVelocity, -16});
+        coyote_ = 0.f;
+    }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Up)||sf::Joystick::isButtonPressed(0, 1)) {
+
+            if (grounded.HasTouched) {
+                physics.SetVelocity({xVelocity, -16});
+                coyote_ = 0.f;
+            }
+
+        }
+
+    if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Up)||sf::Joystick::isButtonPressed(0, 1)) && coyote_ > 0.f) {
+        physics.SetVelocity({xVelocity, -16});
+        coyote_ = 0.f;
+    }
+
+    }
 
 void Entity::CancelMovement() {
     float yVelocity = physics.GetVelocity().y;

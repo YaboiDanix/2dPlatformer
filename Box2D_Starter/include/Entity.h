@@ -20,7 +20,7 @@ class Entity : public sf::Drawable, public game {
     Physical_Object physics;
     sensor grounded;
     Danger danger_;
-
+    float tampon_ = 60.f;
     b2Vec2 spawnPoint = {0,0};   // en unités Box2D (mètres)
 
 public:
@@ -42,7 +42,7 @@ public:
 void Move();
     void CancelMovement();
 
-    void Jump();
+    void Jump(double dt);
 
 };
 
