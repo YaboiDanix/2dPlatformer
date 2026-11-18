@@ -22,15 +22,32 @@ void Entity::Setup(sf::Color, sf::Vector2f size) {
 void Entity::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     target.draw(shape, states);
 }
+bool Entity::create() {
+    if (!texture.loadFromFile(
+            "C:/Users/danix/projets_c++/SFML_Starter/Box2D_Starter/Assets/Transparent/Tilemap/tilemap.png", false,
+            sf::IntRect({0, 63}, {8, 8}))) {
+        std::println("Echec du chargement de la texture");
+        return false;
+            }
 
+    sprite_.emplace(texture);
+    sprite_->setPosition({10.f, 10.f});
+    std::println("sprite_ created");
+    return true;
+}
 void Entity::Update() {
     //physics.Update();
+    if (!sprite_) {
+        std::println("sprite_ vide dans Update, this = {}", (void*)this);
+        return;
+    }
     sf::Vector2f newPosition;
     newPosition.x = Convertions::PhysicsToScreen(physics.GetPosition().x);
     newPosition.y = Convertions::PhysicsToScreen(physics.GetPosition().y);
 
 
     shape.setPosition(newPosition);
+    sprite_->setPosition(newPosition);
     if (grounded.HasTouched) {
         shape.setFillColor(sf::Color::Green);
     } else{
@@ -55,17 +72,7 @@ void Entity::SetupPhysics(b2WorldId &world, b2BodyType type, b2Vec2 position) {
     }
 
 
-//void Entity::MoveLeft() {
-  //  std::println("Move Left");
-    //float yVelocity = physics.GetVelocity().y;
-    //
-//}
 
-//void Entity::MoveRight() {
-
-  //  std::println("Move Right");
-    //
-//}
 void Entity::Move() {
     float yVelocity = physics.GetVelocity().y;
     float x = sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X);
@@ -124,4 +131,14 @@ void Entity::CancelMovement() {
 void Entity::Respawn() {
     b2Body_SetTransform(physics.body_, spawnPoint, b2Rot_identity);
     b2Body_SetLinearVelocity(physics.body_, b2Vec2_zero);
+    coyote_ = 0.f;
+    tampon_ = 0.f;
+}
+
+
+
+void Entity::display(sf::RenderWindow &window) {
+    if (sprite_) {
+        window.draw(*sprite_);
+    }
 }

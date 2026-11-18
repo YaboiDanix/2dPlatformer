@@ -17,6 +17,7 @@ class Entity : public sf::Drawable, public game {
     static constexpr float X_VELOCITY = 16.f;
     sf::RectangleShape shape;
     sf::Texture texture;
+    std::optional<sf::Sprite> sprite_;
     Physical_Object physics;
     sensor grounded;
     Danger danger_;
@@ -36,13 +37,15 @@ public:
 
     void SetupPhysics(b2WorldId &world, b2BodyType type, b2Vec2 position);
 
-   // void MoveLeft();
+    void Move();
 
-    //void MoveRight();
-void Move();
     void CancelMovement();
 
     void Jump(double dt);
+
+    bool create();
+
+    void display(sf::RenderWindow &window);
 
 };
 

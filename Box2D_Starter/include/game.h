@@ -6,6 +6,9 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
+#include <SFML/Audio.hpp>
+
+
 
 
 #ifndef SFML_STARTER_GAME_H
@@ -27,7 +30,7 @@ private:
     b2WorldId monde;
     sf::Clock dtclock;
 sf::Font font;
-
+sf::Music music;
 
 };
 #endif //SFML_STARTER_GAME_H

@@ -19,6 +19,7 @@ void game::initialize() {
     def = b2DefaultWorldDef();
     def.gravity = {0.f, 9.81f};
     monde = b2CreateWorld(&def);
+
 }
 
 void game::loop() {
@@ -28,18 +29,26 @@ void game::loop() {
 
     startPosition = {Convertions::ScreenToPhysics(400), Convertions::ScreenToPhysics(400)};
     font.openFromFile( "C:/Users/danix/projets_c++/SFML_Starter/Box2D_Starter/include/determination.ttf");
+    //if (!music.openFromFile("C:/Users/danix/projets_c++/SFML_Starter/Box2D_Starter/cysmix-fates-0ne96c.ogg")) {
+    //    std::println("music non chargé");
+    //}else {
+     //   music.play();
+    //}
+    sf::Texture texture;
+    texture.loadFromFile("C:/Users/danix/projets_c++/SFML_Starter/Box2D_Starter/Assets/Default/Tilemap/tilemap_packed.png", false, sf::IntRect({26, 26}, {22, 6}));
 
 
+    Entity mario;
 
 
     Entity platform;
     platform.Setup(sf::Color::Red, {1000, 30});
     platform.SetupPhysics(monde, b2_staticBody, {10, 45});
-    Entity mario;
 
-    mario.Setup(sf::Color::Green, {40, 40});
+    mario.Setup(sf::Color::Transparent, {40, 40});
     mario.SetupPhysics(monde, b2_dynamicBody, startPosition);
     mario.SetSpawnPoint(startPosition);
+    mario.create();
     Obstacle spike;
     spike.Setup(sf::Color::Red,{80,100});
     spike.SetupPhysics(monde, b2_staticBody, {30,35});
@@ -54,11 +63,9 @@ void game::loop() {
             accumulateur_ -= kPas;
         }
         while (const std::optional event = window.pollEvent()) {
-
             if (event->is<sf::Event::Closed>()) {
                 window.close();
             }
-
             }
         mario.Move();
         mario.Jump(dt);
@@ -81,8 +88,9 @@ void game::loop() {
         text.setString(timer);
         text.setFillColor(sf::Color::White);
         text.setPosition({10,10});
+
         window.clear(sf::Color::Black);
-        window.draw(mario);
+        mario.display(window);
         window.draw(platform);
         window.draw(spike);
         window.draw(text);
