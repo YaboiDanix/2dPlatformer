@@ -25,12 +25,14 @@ void Entity::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 bool Entity::create() {
     if (!texture.loadFromFile(
             "C:/Users/danix/projets_c++/SFML_Starter/Box2D_Starter/Assets/Transparent/Tilemap/tilemap.png", false,
-            sf::IntRect({0, 63}, {8, 8}))) {
+            sf::IntRect({0, 55}, {8, 8}))) {
         std::println("Echec du chargement de la texture");
         return false;
             }
 
     sprite_.emplace(texture);
+    sprite_->setScale({5.f, 5.f});
+    sprite_->setOrigin({4.f,4.f});
     sprite_->setPosition({10.f, 10.f});
     std::println("sprite_ created");
     return true;
@@ -38,7 +40,7 @@ bool Entity::create() {
 void Entity::Update() {
     //physics.Update();
     if (!sprite_) {
-        std::println("sprite_ vide dans Update, this = {}", (void*)this);
+
         return;
     }
     sf::Vector2f newPosition;
@@ -48,11 +50,40 @@ void Entity::Update() {
 
     shape.setPosition(newPosition);
     sprite_->setPosition(newPosition);
-    if (grounded.HasTouched) {
-        shape.setFillColor(sf::Color::Green);
-    } else{
-        shape.setFillColor(sf::Color::Yellow);
-    }
+
+        if (grounded.HasTouched) {
+            shape.setFillColor(sf::Color::Green);
+            texture.loadFromFile(
+     "C:/Users/danix/projets_c++/SFML_Starter/Box2D_Starter/Assets/Transparent/Tilemap/tilemap.png", false,
+     sf::IntRect({9, 55}, {8, 8}));
+            sprite_->setTexture(texture);
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Right)|| x > 10.f) {
+
+                sprite_->setScale({5.f, 5.f});
+
+            }if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Left)||x <-10.f){
+
+                sprite_->setScale({-5.f, 5.f});
+
+            }
+        } else {
+            shape.setFillColor(sf::Color::Yellow);
+            texture.loadFromFile(
+                    "C:/Users/danix/projets_c++/SFML_Starter/Box2D_Starter/Assets/Transparent/Tilemap/tilemap.png", false,
+                    sf::IntRect({18, 54}, {8, 8}));
+            sprite_->setTexture(texture);
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Right)|| x > 10.f) {
+
+                sprite_->setScale({5.f, 5.f});
+
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Left)||x <-10.f){
+
+                sprite_->setScale({-5.f, 5.f});
+
+            }
+        }
+
 }
 
 void Entity::SetupPhysics(b2WorldId &world, b2BodyType type, b2Vec2 position) {
@@ -73,14 +104,24 @@ void Entity::SetupPhysics(b2WorldId &world, b2BodyType type, b2Vec2 position) {
 
 
 
-void Entity::Move() {
+void Entity::Move(double dt) {
     float yVelocity = physics.GetVelocity().y;
-    float x = sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X);
+
+    constexpr float kPeriod = 1.f/ 12.f;
+    time += dt;
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Left)||x <-10.f) {
         physics.SetVelocity({-X_VELOCITY, yVelocity});
+
+
+
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Right)|| x > 10.f) {
         physics.SetVelocity({X_VELOCITY, yVelocity});
+
+
+
+
     }
     else{
         physics.SetVelocity({0, yVelocity});
@@ -107,12 +148,14 @@ void Entity::Jump(double dt) {
     if (grounded.HasTouched && tampon_ > 0.f) {
         physics.SetVelocity({xVelocity, -16});
         coyote_ = 0.f;
+
     }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Up)||sf::Joystick::isButtonPressed(0, 1)) {
 
             if (grounded.HasTouched) {
                 physics.SetVelocity({xVelocity, -16});
                 coyote_ = 0.f;
+
             }
 
         }
@@ -120,6 +163,7 @@ void Entity::Jump(double dt) {
     if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Up)||sf::Joystick::isButtonPressed(0, 1)) && coyote_ > 0.f) {
         physics.SetVelocity({xVelocity, -16});
         coyote_ = 0.f;
+
     }
 
     }

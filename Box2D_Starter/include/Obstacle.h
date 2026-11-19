@@ -15,9 +15,12 @@
 
 class Obstacle : public sf::Drawable, public game{
     sf::RectangleShape shape;
-    sf::Texture texture;
+    sf::Texture textureS;
+    sf::Texture textureE;
     Physical_Object physics;
     Danger danger_;
+    std::optional<sf::Sprite> spriteS;
+    std::optional<sf::Sprite> spriteE;
 
 
 public:
@@ -29,7 +32,11 @@ public:
 
     void SetupPhysics(b2WorldId &world, b2BodyType type, b2Vec2 position);
 
+    bool CreateS();
+    bool CreateE();
 
+    void DisplayS(sf::RenderWindow &window);
+    void DisplayE(sf::RenderWindow &window);
 };
 
 

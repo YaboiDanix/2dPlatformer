@@ -15,16 +15,22 @@
 
 class Entity : public sf::Drawable, public game {
     static constexpr float X_VELOCITY = 16.f;
-    sf::RectangleShape shape;
+
     sf::Texture texture;
     std::optional<sf::Sprite> sprite_;
-    Physical_Object physics;
-    sensor grounded;
+    float time = 0.f;
     Danger danger_;
     float tampon_ = 60.f;
-    b2Vec2 spawnPoint = {0,0};   // en unités Box2D (mètres)
+    b2Vec2 spawnPoint;   // en unités Box2D (mètres)
+    float x = sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X);
 
 public:
+    Physical_Object physics;
+
+    sf::RectangleShape shape;
+
+    sensor grounded;
+
     void SetSpawnPoint(b2Vec2 spawn) { spawnPoint = spawn; }
 
     void Respawn();
@@ -37,7 +43,7 @@ public:
 
     void SetupPhysics(b2WorldId &world, b2BodyType type, b2Vec2 position);
 
-    void Move();
+    void Move(double dt);
 
     void CancelMovement();
 

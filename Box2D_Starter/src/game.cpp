@@ -13,6 +13,8 @@
 #include "../include/constants.h"
 #include <print>
 
+#include "../include/Platform.h"
+
 void game::initialize() {
     window.create(sf::VideoMode({1600, 1000}), "The physics");
     window.setFramerateLimit(60);
@@ -41,18 +43,21 @@ void game::loop() {
     Entity mario;
 
 
-    Entity platform;
+    Platform platform;
     platform.Setup(sf::Color::Red, {1000, 30});
     platform.SetupPhysics(monde, b2_staticBody, {10, 45});
-
+    platform.createR({10, 45});
     mario.Setup(sf::Color::Transparent, {40, 40});
     mario.SetupPhysics(monde, b2_dynamicBody, startPosition);
     mario.SetSpawnPoint(startPosition);
     mario.create();
     Obstacle spike;
+
     spike.Setup(sf::Color::Red,{80,100});
     spike.SetupPhysics(monde, b2_staticBody, {30,35});
+    spike.CreateS();
     Obstacle Deathbox;
+
     Deathbox.Setup(sf::Color::Transparent,{10000,1});
     Deathbox.SetupPhysics(monde,b2_staticBody,{0,60});
     while (window.isOpen()) {
@@ -67,18 +72,18 @@ void game::loop() {
                 window.close();
             }
             }
-        mario.Move();
+        mario.Move(dt);
         mario.Jump(dt);
 
 
 
 
         mario.Update();
-
+platform.UpdateR();
         SensorsContact(monde);
         DangerContact(monde);
 
-        platform.Update();
+
         spike.Update(mario);
         Deathbox.Update(mario);
         time.start();
@@ -91,8 +96,11 @@ void game::loop() {
 
         window.clear(sf::Color::Black);
         mario.display(window);
+//        window.draw(mario);
         window.draw(platform);
+        platform.displayR(window);
         window.draw(spike);
+        spike.DisplayS(window);
         window.draw(text);
         window.draw(Deathbox);
         window.display();

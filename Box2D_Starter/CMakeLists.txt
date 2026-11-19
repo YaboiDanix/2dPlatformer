@@ -12,6 +12,8 @@ add_executable(Box2D_Starter main.cpp
         src/Obstacle.cpp
         include/Obstacle.h
         include/game.h
-        src/game.cpp)
+        src/game.cpp
+        src/Platform.cpp
+        include/Platform.h)
 
 target_link_libraries(Box2D_Starter PUBLIC SFML::Graphics SFML::Audio box2d::box2d)
