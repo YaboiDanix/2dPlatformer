@@ -7,11 +7,14 @@
 #include "Entity.h"
 
 
-class Platform : public Entity{
+class Platform {
     sf::Texture Rtexture;
     sf::Texture Ctexture;
     std::optional<sf::Sprite> rsprite_;
     std::optional<sf::Sprite> csprite_;
+    sf::RectangleShape shape;
+    Physical_Object physics;
+    sensor grounded;
 public:
     bool createC(b2Vec2 position);
 
@@ -22,6 +25,16 @@ public:
     void displayC(sf::RenderWindow &window);
 
     void UpdateR();
+
+    void UpdateC();
+
+    void setupBorder(b2WorldId &world, b2BodyType type, b2Vec2 position);
+
+    void Setup(sf::Color color, sf::Vector2f size);
+
+    void SetupPhysics(b2WorldId &world, b2BodyType type, b2Vec2 position);
+
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 };
 
 

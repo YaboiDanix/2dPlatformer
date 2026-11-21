@@ -8,18 +8,17 @@
 #include <SFML/Window.hpp>
 #include "../include/game.h"
 #include "../include/Entity.h"
-#include "../include/Obstacle.h"
 #include "../include/contacts.h"
 #include "../include/constants.h"
 #include <print>
 
-#include "../include/Platform.h"
+#include "../include/levels.h"
 
 void game::initialize() {
-    window.create(sf::VideoMode({1600, 1000}), "The physics");
+    window.create(sf::VideoMode({1600, 900}), "The physics");
     window.setFramerateLimit(60);
     def = b2DefaultWorldDef();
-    def.gravity = {0.f, 9.81f};
+    def.gravity = {0.f, 20};
     monde = b2CreateWorld(&def);
 
 }
@@ -30,36 +29,26 @@ void game::loop() {
     constexpr int kSousPas = 4;
 
     startPosition = {Convertions::ScreenToPhysics(400), Convertions::ScreenToPhysics(400)};
-    font.openFromFile( "C:/Users/danix/projets_c++/SFML_Starter/Box2D_Starter/include/determination.ttf");
+    if (!font.openFromFile("C:/Users/danix/projets_c++/SFML_Starter/Box2D_Starter/Assets/determination.ttf")) {
+        std::println("police non chargee");
+    }
+    timertext.emplace(font);
+    timertext->setFillColor(sf::Color::White);
+    timertext->setPosition({10, 10});
     //if (!music.openFromFile("C:/Users/danix/projets_c++/SFML_Starter/Box2D_Starter/cysmix-fates-0ne96c.ogg")) {
     //    std::println("music non chargé");
     //}else {
      //   music.play();
     //}
-    sf::Texture texture;
-    texture.loadFromFile("C:/Users/danix/projets_c++/SFML_Starter/Box2D_Starter/Assets/Default/Tilemap/tilemap_packed.png", false, sf::IntRect({26, 26}, {22, 6}));
+    levels level(monde,window,startPosition,font);
+    level.load();
+
+timer.start();
 
 
-    Entity mario;
 
 
-    Platform platform;
-    platform.Setup(sf::Color::Red, {1000, 30});
-    platform.SetupPhysics(monde, b2_staticBody, {10, 45});
-    platform.createR({10, 45});
-    mario.Setup(sf::Color::Transparent, {40, 40});
-    mario.SetupPhysics(monde, b2_dynamicBody, startPosition);
-    mario.SetSpawnPoint(startPosition);
-    mario.create();
-    Obstacle spike;
 
-    spike.Setup(sf::Color::Red,{80,100});
-    spike.SetupPhysics(monde, b2_staticBody, {30,35});
-    spike.CreateS();
-    Obstacle Deathbox;
-
-    Deathbox.Setup(sf::Color::Transparent,{10000,1});
-    Deathbox.SetupPhysics(monde,b2_staticBody,{0,60});
     while (window.isOpen()) {
         dt = dtclock.restart().asMilliseconds();
         accumulateur_ += dt;
@@ -72,37 +61,26 @@ void game::loop() {
                 window.close();
             }
             }
-        mario.Move(dt);
-        mario.Jump(dt);
 
 
 
 
-        mario.Update();
-platform.UpdateR();
+
+
+
         SensorsContact(monde);
         DangerContact(monde);
 
 
-        spike.Update(mario);
-        Deathbox.Update(mario);
-        time.start();
-        float t = time.getElapsedTime().asSeconds();
-        sf::String timer = std::format("{:.2f}",t);
-        sf::Text text(font);
-        text.setString(timer);
-        text.setFillColor(sf::Color::White);
-        text.setPosition({10,10});
 
         window.clear(sf::Color::Black);
-        mario.display(window);
-//        window.draw(mario);
-        window.draw(platform);
-        platform.displayR(window);
-        window.draw(spike);
-        spike.DisplayS(window);
-        window.draw(text);
-        window.draw(Deathbox);
+
+
+        level.tutorial(dt);
+
+
+
+    window.draw(*timertext);
         window.display();
 
      }

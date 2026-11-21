@@ -13,7 +13,7 @@
 #include "object.h"
 
 
-class Obstacle : public sf::Drawable, public game{
+class Obstacle : public sf::Drawable{
     sf::RectangleShape shape;
     sf::Texture textureS;
     sf::Texture textureE;
