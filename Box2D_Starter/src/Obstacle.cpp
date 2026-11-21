@@ -21,17 +21,14 @@ void Obstacle::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 }
 
 void Obstacle::Update(Entity& entity) {
-    if (!spriteS) {
 
-        return;
-    }
     sf::Vector2f newPosition;
     newPosition.x = Convertions::PhysicsToScreen(physics.GetPosition().x);
     newPosition.y = Convertions::PhysicsToScreen(physics.GetPosition().y);
 
 
     shape.setPosition(newPosition);
-    spriteS->setPosition(newPosition);
+
 
     if (danger_.HasHit) {
         entity.Respawn();
@@ -39,6 +36,11 @@ void Obstacle::Update(Entity& entity) {
     } else{
         shape.setFillColor(sf::Color::Red);
     }
+    if (!spriteS) {
+
+        return;
+    }
+    spriteS->setPosition(newPosition);
 }
 
 void Obstacle::SetupPhysics(b2WorldId &world, b2BodyType type, b2Vec2 position) {

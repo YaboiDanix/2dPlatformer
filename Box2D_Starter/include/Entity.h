@@ -13,14 +13,17 @@
 #include "sensor.h"
 
 
-class Entity : public sf::Drawable, public game {
+class Entity : public sf::Drawable {
     static constexpr float X_VELOCITY = 16.f;
+    static constexpr float Y_VELOCITY = 16.f;
 
     sf::Texture texture;
     std::optional<sf::Sprite> sprite_;
+    std::optional<sf::Sprite> Endsprite_;
     float time = 0.f;
     Danger danger_;
     float tampon_ = 60.f;
+    float coyote_ = 0.f;
     b2Vec2 spawnPoint;   // en unités Box2D (mètres)
     float x = sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X);
 
@@ -51,8 +54,13 @@ public:
 
     bool create();
 
+    bool createEnd();
+
     void display(sf::RenderWindow &window);
 
+    void Enddisplay(sf::RenderWindow &window);
+
+    bool End();
 };
 
 
